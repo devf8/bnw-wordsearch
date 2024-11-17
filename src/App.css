@@ -1,0 +1,85 @@
+* {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+  background-color: #baced4;
+}
+
+.WordSearchApp {
+ 
+}
+
+.HomeHeader {
+  
+  padding: 20px;
+  font-size: 20px;
+}
+
+.HomeForm {
+  background-color: #bef1ff;
+  height: 100%;
+  padding:20px;
+}
+
+.HomeForm__Label {
+  padding-right: 10px;
+  font-size: 20px;
+}
+
+.HomeForm__WordsBox {
+  margin-top: 20px;
+}
+
+.WordInput {
+  margin-bottom:6px;
+  text-transform: uppercase;
+}
+
+.WordButton {
+  margin-right: 4px;
+  padding:6px;
+  background-color: rgb(40, 191, 115);
+  color:white;
+  font-weight:bold;
+  border-radius: 4px;
+}
+
+.RemoveWord {
+  background-color: rgb(213, 139, 139);
+  color:white;
+  font-weight:bold;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #bfdde5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.App-link {
+  color: #8fd3e6;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
