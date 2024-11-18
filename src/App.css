@@ -3,32 +3,117 @@
 }
 
 body {
-  background-color: #baced4;
+  background-color: #f3fcff;
+}
+
+.PuzzleTitle {
+  text-align: center;
+  font-size: 23px;
+  font-weight: bold;
+  padding:12px;
+}
+
+.PuzzleLayout {
+  margin-left: 20px;
+  margin-right: 20px;
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  /* align-items: center; */
+  justify-content: center;
+  gap: 10px;
+}
+
+
+.Puzzle {
+  text-align: center;
+  padding:7px;
+  border:2px solid black;
+  width:fit-content;  
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+}
+
+.PuzzleRow{
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.PuzzleLetter{
+  width:25px;
+  display: block;
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.PuzzleWordsBox {
+  /* padding-top:13px; */
+  border:2px solid rgb(198, 198, 198);
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: fit-content;
+  max-height:230px;
+  width: fit-content;
+}
+
+.PuzzleWord {
+  /* font-size: 90%; */
+  text-align: left;
+  padding-left: 25px;
+  padding-right: 5px;
+  /* border:1px solid rgb(202, 202, 206); */
 }
 
 .WordSearchApp {
- 
+ text-align: center;
+}
+
+.HomeFormRadioGroup {
+  padding:10px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  display: flex;
+}
+
+.HomeFormRadio {
+  display: flex;
+  flex-wrap: nowrap;
 }
 
 .HomeHeader {
-  
   padding: 20px;
-  font-size: 20px;
 }
 
 .HomeForm {
-  background-color: #bef1ff;
+  background-color: #bce5f1;
   height: 100%;
   padding:20px;
 }
 
 .HomeForm__Label {
-  padding-right: 10px;
-  font-size: 20px;
+  width: 180px;
+  display:inline-block;
+  font-weight: bold;
+}
+
+.HomeForm__Input {
+  width: 180px;
+  display:inline-block;
+  text-align: right;
+}
+
+.HomeForm__WordInput {
+  text-transform: uppercase;
+}
+
+.HomeForm__Checkbox {
 }
 
 .HomeForm__WordsBox {
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .WordInput {
@@ -54,6 +139,46 @@ body {
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.HeaderContainer {
+  padding: 10px;
+  height:50px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  column-gap: 10px;
+  row-gap: 0px;
+}
+
+.HeaderLetter {
+  font-weight: bold;
+  position: relative;
+  animation-name: bounce1;
+  animation-duration: 0.08s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;  
+}
+
+.HeaderLetter2 {
+  font-weight: bold;
+  position: relative;
+  animation-name: bounce2;
+  animation-duration: 0.08s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;  
+}
+
+@keyframes bounce1 {
+  0%   {color:#6e6e6e; top:5px;}
+  100% {top:3px;}
+}
+
+@keyframes bounce2 {
+  0%   {top:3px;}
+  100% {color:#6e6e6e; top:5px;}
 }
 
 @media (prefers-reduced-motion: no-preference) {
