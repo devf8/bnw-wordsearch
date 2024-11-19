@@ -50,7 +50,7 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
     words.forEach((word, w) => {
         let upWord = word.toUpperCase();
 
-        if (upWord.trim().length > maxWordLength) {
+        if (upWord.replaceAll(' ', '').length > maxWordLength) {
             maxedWords += `"${upWord}" `;
         }
 

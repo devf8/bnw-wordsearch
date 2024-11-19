@@ -8,10 +8,11 @@ const Puzzle = (props) => {
   const { state } = useLocation();
   const puzzle = state.puzzle ;
   const [showSolutions, setShowSolutions] = useState(false);
+  const [print, setPrint] = useState(false);
   const cheatHeader = "Cheating!";
   // console.log(puzzle);
   const puzzleHeader = 
-    showSolutions && cheatHeader
+    !print && showSolutions && cheatHeader
     ? cheatHeader.split('').map((word, w) => <div style={{display:"inline-block"}} className={w % 2 == 0 ? 'HeaderLetter' : 'HeaderLetter2'}>{word}</div>) 
     : puzzle.title;
 
@@ -41,6 +42,7 @@ const Puzzle = (props) => {
   }
 
   const saveAsImage = async () => {
+    setPrint(true);
     console.log('saving');
     const toPrint = document.getElementById('puzzleImage');
     toPrint.classList.replace("PuzzleBody", "PuzzleImage");
@@ -48,11 +50,12 @@ const Puzzle = (props) => {
     const data = canvas.toDataURL('image/jpg');
     const link = document.createElement('a');
     link.href = data;
-    link.download = `${puzzle.title ? puzzle.title.replace(/[^a-zA-Z0-9]/g, '-') : `bnw-${Date.now()}`}.jpg`;
+    link.download = `${puzzle.title ? puzzle.title.replace(/[^a-zA-Z0-9]/g, '-') : `bnw-${Date.now()}`}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     toPrint.classList.replace("PuzzleImage", "PuzzleBody");
+    setPrint(false);
   }
 
   return <>

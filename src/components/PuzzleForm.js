@@ -58,129 +58,147 @@ const PuzzleForm = () => {
           return <><div className={w % 2 == 0 ? 'HeaderLetter' : 'HeaderLetter2'}>{word}</div></>
         })}
       </div>
+      <div className="FormContainer">
 
-      <div className="HomeForm">
-        <div>
-          <div>            
-            <div className="HomeForm__Label"><b>Puzzle Title</b></div>
-              <input
-                  className="HomeForm__Input"
-                  type="text" 
-                  value={title}
-                  placeholder='Input Title'
-                  maxLength={40}
-                  onChange={(e) => setTitle(e.target.value)}
-              />
-          </div>
+        <div className="HomeForm" style={{textAlign:"center"}}>
+          <div >
+            <div>
+              <div>            
+                <div className="HomeForm__Label"><b>Puzzle Title</b></div>
+                  <input
+                      className="HomeForm__Input"
+                      type="text" 
+                      value={title}
+                      placeholder='Input Title'
+                      maxLength={40}
+                      onChange={(e) => setTitle(e.target.value)}
+                  />
+              </div>
 
 
-          <div className="HomeFormRadioGroup">
-            <div><b>Puzzle Size:</b></div>
-            <div className="HomeFormRadio">
-              <label>
-                <input
-                  type="radio"
-                  value="small"
-                  checked={puzzleSize === "small"}
-                  onChange={onChangePuzzleSize}
-                />
-                small [12x12] 15-ish words
-              </label>
-            </div>        
-
-            <div className="HomeFormRadio">
-              <label>
-                <input
-                  type="radio"
-                  value="medium"
-                  checked={puzzleSize === "medium"}
-                  onChange={onChangePuzzleSize}
-                />
-                  medium [20x15] 25-ish words 
-              </label>
-            </div>  
-            
-            <div className="HomeFormRadio">
-              <label>
-                <input
-                  type="radio"
-                  value="large"
-                  checked={puzzleSize === "large"}
-                  onChange={onChangePuzzleSize}
-                />
-                large [23x18] 35-ish words
-              </label>
-            </div>  
-          </div>
-
-          <div><b>Puzzle Output:</b></div>
-          <div className="HomeForm__Checkbox">   
-            <label>
-                <input
-                    type="checkbox"
-                    checked={diagonalChecked}
-                    onChange={(e) => {
-                        setdiagonalChecked(!diagonalChecked);
-                    }}
+              <div className="HomeFormRadioGroup">
+                <div><b>Puzzle Size:</b></div>
+                <div className="HomeFormRadio">
+                  <label>
+                    <input
+                      type="radio"
+                      value="small"
+                      checked={puzzleSize === "small"}
+                      onChange={onChangePuzzleSize}
                     />
-                    Diagonal routes (recommended)
-            </label>
-          </div>
+                    small [12x12] 15-ish words
+                  </label>
+                </div>        
 
-          <div className="HomeForm__Checkbox">   
-            <label>
-                <input
-                    type="checkbox"
-                    checked={sortChecked}
-                    onChange={(e) => setSortChecked(!sortChecked)}
+                <div className="HomeFormRadio">
+                  <label>
+                    <input
+                      type="radio"
+                      value="medium"
+                      checked={puzzleSize === "medium"}
+                      onChange={onChangePuzzleSize}
                     />
-                    Sort Alphabetical
-            </label>
-          </div>
+                      medium [20x15] 25-ish words 
+                  </label>
+                </div>  
+                
+                <div className="HomeFormRadio">
+                  <label>
+                    <input
+                      type="radio"
+                      value="large"
+                      checked={puzzleSize === "large"}
+                      onChange={onChangePuzzleSize}
+                    />
+                    large [23x18] 35-ish words
+                  </label>
+                </div>  
+              </div>
 
+              <div><b>Puzzle Output:</b></div>
+              <div className="HomeForm__Checkbox">   
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={diagonalChecked}
+                        onChange={(e) => {
+                            setdiagonalChecked(!diagonalChecked);
+                        }}
+                        />
+                        Diagonal routes (recommended)
+                </label>
+              </div>
+
+              <div className="HomeForm__Checkbox">   
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={sortChecked}
+                        onChange={(e) => setSortChecked(!sortChecked)}
+                        />
+                        Sort Alphabetical
+                </label>
+              </div>
+
+            </div>
+
+            <div style={{marginTop:"15px"}}>
+              <div className="HomeForm__Label">Word Entries:</div>
+
+              <div>
+                <button className="WordButton" style={{backgroundColor:"#287bbf"}} type="button" onClick={sortAlphabetical}>
+                  * Sort Alphabetical
+                </button>
+
+                <button className={'WordButton' + (formDone ? ' Go' : '')} style={{backgroundColor:"#bf2899"}} type="button" onClick={createPuzzle}>
+                  ~ Done! Create Puzzle
+                </button>
+
+                <div style={{paddingTop:"8px"}}>
+                  [Word Count: {words.filter(elem => elem).length}]  [Letter Count: {words.join('').replaceAll(' ', '').length}]
+                </div>
+        
+                <div className="HomeForm__WordsBox">
+                  <label>
+                    <textarea 
+                      className="HomeForm__WordInput" 
+                      maxLength={4000}
+                      style={{resize:"none"}} placeholder="input one word per line" rows={20} cols={35} value={wordArea} onChange={(e) => {
+                        setWordArea(e.target.value);
+                        setWords(e.target.value.split('\n'));
+                    }}/>
+                  </label>
+
+                  {/* {words.map((word, idx) => 
+                      <div key={idx}>
+                          <WordInput wordVal={word} words={words} setWords={setWords} wordIdx={idx}></WordInput>
+                      </div>
+                  )}
+                  <button className="WordButton"  type="button" onClick={addNewWord}>
+                      + Add Word
+                  </button> */}
+                
+                </div>
+              </div>
+
+            </div>
+          </div> {/*end homeform */}
         </div>
 
-        <div style={{marginTop:"15px"}}>
-          <div className="HomeForm__Label">Word Entries:</div>
-
+        <div className="HomeForm--Guide">
+          <div><b>Guidelines</b></div>         
           <div>
-            <button className="WordButton" style={{backgroundColor:"#287bbf"}} type="button" onClick={sortAlphabetical}>
-              * Sort Alphabetical
-            </button>
-
-            <button className={'WordButton' + (formDone ? ' Go' : '')} style={{backgroundColor:"#bf2899"}} type="button" onClick={createPuzzle}>
-              ~ Done! Create Puzzle
-            </button>
-
-            <div style={{paddingTop:"8px"}}>
-              [Word Count: {words.filter(elem => elem).length}]  [Letter Count: {words.join('').replaceAll(' ', '').length}]
-            </div>
-    
-            <div className="HomeForm__WordsBox">
-              <label>
-                <textarea 
-                  className="HomeForm__WordInput" 
-                  maxLength={4000}
-                  style={{resize:"none"}} rows={25} cols={35} value={wordArea} onChange={(e) => {
-                    setWordArea(e.target.value);
-                    setWords(e.target.value.split('\n'));
-                }}/>
-              </label>
-
-              {/* {words.map((word, idx) => 
-                  <div key={idx}>
-                      <WordInput wordVal={word} words={words} setWords={setWords} wordIdx={idx}></WordInput>
-                  </div>
-              )}
-              <button className="WordButton"  type="button" onClick={addNewWord}>
-                  + Add Word
-              </button> */}
-             
-            </div>
-          </div>
-
+            <ul>
+              <li>Max word length: 12 chars</li>
+              <li>Spaces are supported.<br/>ex: "HELLO WORLD"</li>
+              <li>Press "s" in the puzzle page to view solution.</li>
+              <br/>
+              <br/>
+              <li><a style={{color:"white"}} href="https://github.com/fadimaranan/bnw-wordsearch">github project</a></li>
+            </ul>
+          </div> 
         </div>
-      </div> {/*end homeform */}
+      </div>
     </div>
   </>;
 };

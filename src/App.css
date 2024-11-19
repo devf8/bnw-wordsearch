@@ -90,6 +90,11 @@ body {
   height:751px;
 }
 
+.PuzzleImage .PuzzleLayout{
+  flex-direction: column;
+  align-items: center;
+}
+
 .PuzzleSave {
   margin:12px;
   padding:6px;
@@ -104,9 +109,15 @@ body {
 /**=============================================**/
 
 .WordSearchApp {
- text-align: center;
+ /* text-align: center; */
 }
 
+.FormContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
 .HomeFormRadioGroup {
   padding:10px;
   align-items: center;
@@ -124,10 +135,17 @@ body {
   padding: 20px;
 }
 
-.HomeForm {
+.HomeForm, .HomeForm--Guide {
+  border-radius: 4px;
   background-color: #bce5f1;
   height: 100%;
   padding:20px;
+}
+
+.HomeForm--Guide {
+  max-width: 350px;
+  background-color: #3c7586;
+  color:white;
 }
 
 .HomeForm__Label {
