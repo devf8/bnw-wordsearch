@@ -1,5 +1,5 @@
 
-const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, diagonal = true, sortAlphabetical = true) => {
+const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, diagonal = true, sortAlphabetical = true, mix = true) => {
     if (words.length < 1) {
         return {
             message: "Please add words."
@@ -8,7 +8,7 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
 
     let open = ' ';
     let letterPool = [];
-    let mixWords = false;
+    let mixWords = mix;
     let maxWordLength = 12;
     let message = null;
 
