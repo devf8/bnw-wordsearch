@@ -191,8 +191,6 @@ const PuzzleForm = () => {
             <ul>
               <li>Max word length: 16 chars</li>
               <li>Spaces are supported.<br/>ex: "HELLO WORLD"</li>
-              <li>Press "s" in the puzzle page to view solution.</li>
-              <br/>
               <br/>
               <br/>
               <li >
