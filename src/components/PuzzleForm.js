@@ -189,10 +189,17 @@ const PuzzleForm = () => {
           <div><b>Guidelines</b></div>         
           <div>
             <ul>
-              <li>Max word length: 12 chars</li>
+              <li>Max word length: 16 chars</li>
               <li>Spaces are supported.<br/>ex: "HELLO WORLD"</li>
               <li>Press "s" in the puzzle page to view solution.</li>
               <br/>
+              <br/>
+              <br/>
+              <li>
+                <a style={{color:"white"}} href="https://www.google.com/search?sca_esv=7b9c9567d754e81c&sxsrf=ADLYWIIbxQUgIto1uLiFm-4Qw4j1H7tUtg:1731996967971&q=bent+and+wiggly+word+puzzle&udm=2&fbs=AEQNm0Aa4sjWe7Rqy32pFwRj0UkWd8nbOJfsBGGB5IQQO6L3JzEq8sk6FPCPzvp42tv1tXpZ0Yh36BuFvbp7Lfibs4RlbU4hnt0VM3lOmluQvbDEyUsli9dg2Rr8QJ5d_eC1yq8JW0KDmK3E2qdv1nVyyp4RYuJEZmFpna7uaEhQOWyi1bOysx5Q3qTX9cNA8VlL125VSHsWPCJX-2bj8IBlquy98k8BiA&sa=X&ved=2ahUKEwiLnpzA3-eJAxXzk1YBHbi-CsEQtKgLegQIGBAB&biw=1552&bih=719&dpr=1.65">What is a bent and wiggly word search puzzle?</a>
+                <br/>
+                Try generating a puzzle with only one long word, then show the solution to see a demo
+              </li>
               <br/>
               <li><a style={{color:"white"}} href="https://github.com/fadimaranan/bnw-wordsearch">github project</a></li>
             </ul>

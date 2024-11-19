@@ -9,7 +9,7 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
     let open = ' ';
     let letterPool = [];
     let mixWords = mix;
-    let maxWordLength = 12;
+    let maxWordLength = 16;
     let message = null;
 
     if (puzzleSize !== null) {
