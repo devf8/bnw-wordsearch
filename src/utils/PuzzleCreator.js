@@ -8,7 +8,7 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
 
     let open = ' ';
     let letterPool = [];
-    let mixWords = true;
+    let mixWords = false;
     let maxWordLength = 12;
     let message = null;
 
@@ -43,6 +43,7 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
     if (sortAlphabetical) {
         words.sort();
     }
+
 
     let maxedWords = "";
 
