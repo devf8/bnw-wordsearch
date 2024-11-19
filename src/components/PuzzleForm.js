@@ -14,6 +14,7 @@ const PuzzleForm = () => {
     const [wordArea, setWordArea] = useState("");
     const [diagonalChecked, setdiagonalChecked] = useState(true);
     const [sortChecked, setSortChecked] = useState(true);
+    const [formDone, setFormDone] = useState(false);
 
     const header = "Welcome to bent n wiggly word search generator by F8"
 
@@ -33,14 +34,16 @@ const PuzzleForm = () => {
 
     const createPuzzle = () => {
       let puzzle = PuzzleCreator.createPuzzle(title, words, rows, cols, puzzleSize, diagonalChecked, sortChecked);
-
       if (puzzle.exhaustedTrigger) {
           console.log('~~~ something is wrong');
           alert('Something went wrong with generating your puzzle. Try reducing word/letter count or increasing puzzle size.');
       } else if (puzzle.message) {
         alert(puzzle.message);
       } else {
-        navigate('/puzzle', { state: { puzzle: puzzle.puzzle }});
+        setFormDone(true);
+        setTimeout(() => {
+          navigate('/puzzle', { state: { puzzle: puzzle.puzzle }});
+        }, 800); 
       }
     }
 
@@ -145,7 +148,7 @@ const PuzzleForm = () => {
               * Sort Alphabetical
             </button>
 
-            <button className="WordButton" style={{backgroundColor:"#bf2899"}} type="button" onClick={createPuzzle}>
+            <button className={'WordButton' + (formDone ? ' Go' : '')} style={{backgroundColor:"#bf2899"}} type="button" onClick={createPuzzle}>
               ~ Done! Create Puzzle
             </button>
 

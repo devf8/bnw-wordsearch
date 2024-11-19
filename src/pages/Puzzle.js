@@ -1,6 +1,7 @@
 import {useLocation} from 'react-router-dom';
 import PuzzleCreator from '../utils/PuzzleCreator';
 import { useState, useEffect } from 'react';
+import html2canvas from 'html2canvas';
 
 const Puzzle = (props) => {
   // const { state } = props.location;
@@ -8,7 +9,7 @@ const Puzzle = (props) => {
   const puzzle = state.puzzle ;
   const [showSolutions, setShowSolutions] = useState(false);
   const cheatHeader = "Cheating!";
-  console.log(puzzle);
+  // console.log(puzzle);
   const puzzleHeader = 
     showSolutions && cheatHeader
     ? cheatHeader.split('').map((word, w) => <div style={{display:"inline-block"}} className={w % 2 == 0 ? 'HeaderLetter' : 'HeaderLetter2'}>{word}</div>) 
@@ -39,36 +40,59 @@ const Puzzle = (props) => {
     return 'PuzzleLetter--Out';
   }
 
+  const saveAsImage = async () => {
+    console.log('saving');
+    const toPrint = document.getElementById('puzzleImage');
+    toPrint.classList.replace("PuzzleBody", "PuzzleImage");
+    const canvas = await html2canvas(toPrint);
+    const data = canvas.toDataURL('image/jpg');
+    const link = document.createElement('a');
+    link.href = data;
+    link.download = `${puzzle.title ? puzzle.title.replace(/[^a-zA-Z0-9]/g, '-') : `bnw-${Date.now()}`}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toPrint.classList.replace("PuzzleImage", "PuzzleBody");
+  }
+
   return <>
-    <div className='PuzzleTitle'>
-      {puzzleHeader}
-    </div>
-    <div className='PuzzleLayout'>
-      <div className="Puzzle">
-        {puzzle.puzzle.map((row, r) => {
-          return <div className="PuzzleRow">
-            {row.map((col, c) => {
+    <div>
+      <button className="PuzzleSave" type="button" onClick={saveAsImage}>
+        Save Image
+      </button>
+      <div style={{clear:"both"}}></div>
+      <div id="puzzleImage" className='PuzzleBody'>
+        <div className='PuzzleTitle'>
+          {puzzleHeader}
+        </div>
+        <div className='PuzzleLayout'>
+          <div className="Puzzle">
+            {puzzle.puzzle.map((row, r) => {
+              return <div className="PuzzleRow">
+                {row.map((col, c) => {
+                  return <>
+                    <div className={'PuzzleLetter ' + (showSolutions && getLetterClass(r,c))}>
+                      {col}
+                    </div>
+                  </>
+                })}
+              </div>
+            })}
+          </div>
+          <div className="PuzzleWordsBox">
+                <div style={{fontWeight:"bold"}} className="PuzzleWord">
+                  {/* check how many placed */}
+                  {puzzle.wordsInfo.filter((wordInf) => wordInf.placed).length} WORDS
+                </div>
+            {puzzle.wordsInfo.map((wordInf, w) => {
               return <>
-                <div className={'PuzzleLetter ' + (showSolutions && getLetterClass(r,c))}>
-                  {col}
+                <div className={"PuzzleWord " + (showSolutions ? ' PuzzleWord--Solution' : '')}>
+                  {wordInf.placed && wordInf.display}
                 </div>
               </>
             })}
           </div>
-        })}
-      </div>
-      <div className="PuzzleWordsBox">
-            <div style={{fontWeight:"bold"}} className="PuzzleWord">
-              {/* check how many placed */}
-              {puzzle.wordsInfo.filter((wordInf) => wordInf.placed).length} WORDS
-            </div>
-        {puzzle.wordsInfo.map((wordInf, w) => {
-          return <>
-            <div className={"PuzzleWord " + (showSolutions ? ' PuzzleWord--Solution' : '')}>
-              {wordInf.placed && wordInf.display}
-            </div>
-          </>
-        })}
+        </div>
       </div>
     </div>
   </>;
