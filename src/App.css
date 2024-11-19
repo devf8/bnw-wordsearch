@@ -105,6 +105,16 @@ body {
   float:right;
 }
 
+.PuzzleSolution {
+  margin:12px;
+  padding:6px;
+  background-color: #2876bf;
+  color:white;
+  font-weight:bold;
+  border-radius: 4px;
+  float:right;
+}
+
 
 /**=============================================**/
 
@@ -124,6 +134,11 @@ body {
   justify-content: center;
   flex-direction: column;
   display: flex;
+}
+
+.HomeLink {
+  color:white;
+  text-underline-offset: 4px;
 }
 
 .HomeFormRadio {
@@ -225,6 +240,7 @@ body {
   animation-iteration-count: infinite;
   animation-direction: alternate;  
 }
+
 
 .Go {
   animation-name: go;

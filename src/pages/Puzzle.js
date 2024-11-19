@@ -8,28 +8,11 @@ const Puzzle = (props) => {
   const { state } = useLocation();
   const puzzle = state.puzzle ;
   const [showSolutions, setShowSolutions] = useState(false);
-  const [print, setPrint] = useState(false);
-  const cheatHeader = "Cheating!";
+  const [printing, setPrinting] = useState(false);
+  const cheatText = "Cheating!";
+
   // console.log(puzzle);
-  const puzzleHeader = 
-    !print && showSolutions && cheatHeader
-    ? cheatHeader.split('').map((word, w) => <div style={{display:"inline-block"}} className={w % 2 == 0 ? 'HeaderLetter' : 'HeaderLetter2'}>{word}</div>) 
-    : puzzle.title;
-
-
-  useEffect(() => {
-    function handleKeyDown(e) {
-      if (e.key === 's' || e.key === 'S') {
-        setShowSolutions(!showSolutions);
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown);
-
-    return function cleanup() {
-      document.removeEventListener('keydown', handleKeyDown);
-    }
-  }, [showSolutions]);
+  const cheatHeader = cheatText.split('').map((word, w) => <div style={{display:"inline-block"}} className={w % 2 == 0 ? 'HeaderLetter' : 'HeaderLetter2'}>{word}</div>);
 
   const getLetterClass = (row, col) => {
     if (puzzle.solutions.firstLetters.indexOf(PuzzleCreator.createPos(row,col)) !== -1) {
@@ -42,20 +25,23 @@ const Puzzle = (props) => {
   }
 
   const saveAsImage = async () => {
-    setPrint(true);
-    console.log('saving');
+    setPrinting(true);
+
     const toPrint = document.getElementById('puzzleImage');
     toPrint.classList.replace("PuzzleBody", "PuzzleImage");
+
     const canvas = await html2canvas(toPrint);
-    const data = canvas.toDataURL('image/jpg');
+    const data = canvas.toDataURL('image/png');
+
     const link = document.createElement('a');
     link.href = data;
-    link.download = `${puzzle.title ? puzzle.title.replace(/[^a-zA-Z0-9]/g, '-') : `bnw-${Date.now()}`}`;
+    link.download = `${puzzle.title ? puzzle.title.replace(/[^a-zA-Z0-9]/g, '-') : 'bnwf8-' + Date.now()}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
     toPrint.classList.replace("PuzzleImage", "PuzzleBody");
-    setPrint(false);
+    setPrinting(false);
   }
 
   return <>
@@ -63,10 +49,13 @@ const Puzzle = (props) => {
       <button className="PuzzleSave" type="button" onClick={saveAsImage}>
         Save Image
       </button>
+      <button className="PuzzleSolution" type="button" onClick={(e) => setShowSolutions(!showSolutions)}>
+        Show Solution
+      </button>
       <div style={{clear:"both"}}></div>
       <div id="puzzleImage" className='PuzzleBody'>
-        <div className='PuzzleTitle'>
-          {puzzleHeader}
+        <div id="puzzleTitle" className='PuzzleTitle'>
+          {!printing && showSolutions ? cheatHeader : puzzle.title}
         </div>
         <div className='PuzzleLayout'>
           <div className="Puzzle">
