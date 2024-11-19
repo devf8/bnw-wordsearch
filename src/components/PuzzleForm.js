@@ -1,7 +1,7 @@
 import {  useState, useReducer } from 'react';
 import WordInput from './WordInput';
 import PuzzleCreator from '../utils/PuzzleCreator';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
 const PuzzleForm = () => {
     const navigate = useNavigate();
@@ -10,14 +10,12 @@ const PuzzleForm = () => {
     const [words, setWords] = useState([]);
     const [rows, setRows] = useState(20);
     const [cols, setCols] = useState(15);
-    const [wordCount, setWordCount] = useState(0);
     const [puzzleSize, setPuzzleSize] = useState('medium');
     const [wordArea, setWordArea] = useState("");
     const [diagonalChecked, setdiagonalChecked] = useState(true);
+    const [sortChecked, setSortChecked] = useState(true);
 
     const header = "Welcome to bent n wiggly word search generator by F8"
-
-    const [ignored, forceUpdate] = useReducer(x => x + 1, 0);
 
     function addNewWord() {
         setWords([...words, '']);
@@ -34,7 +32,7 @@ const PuzzleForm = () => {
     }
 
     const createPuzzle = () => {
-      let puzzle = PuzzleCreator.createPuzzle(title, words, rows, cols, puzzleSize, diagonalChecked);
+      let puzzle = PuzzleCreator.createPuzzle(title, words, rows, cols, puzzleSize, diagonalChecked, sortChecked);
 
       if (puzzle.exhaustedTrigger) {
           console.log('~~~ something is wrong');
@@ -53,8 +51,8 @@ const PuzzleForm = () => {
   return <>
     <div className="WordSearchApp">
       <div className="HeaderContainer">
-        {header.split(' ').map((letter, l) => {
-          return <><div className={l % 2 == 0 ? 'HeaderLetter' : 'HeaderLetter2'}>{letter}</div></>
+        {header.split(' ').map((word, w) => {
+          return <><div className={w % 2 == 0 ? 'HeaderLetter' : 'HeaderLetter2'}>{word}</div></>
         })}
       </div>
 
@@ -67,6 +65,7 @@ const PuzzleForm = () => {
                   type="text" 
                   value={title}
                   placeholder='Input Title'
+                  maxLength={40}
                   onChange={(e) => setTitle(e.target.value)}
               />
           </div>
@@ -75,37 +74,43 @@ const PuzzleForm = () => {
           <div className="HomeFormRadioGroup">
             <div><b>Puzzle Size:</b></div>
             <div className="HomeFormRadio">
-              <input
-                type="radio"
-                value="small"
-                checked={puzzleSize === "small"}
-                onChange={onChangePuzzleSize}
-              />
-              <div>small [12x12] 15-ish words</div>
+              <label>
+                <input
+                  type="radio"
+                  value="small"
+                  checked={puzzleSize === "small"}
+                  onChange={onChangePuzzleSize}
+                />
+                small [12x12] 15-ish words
+              </label>
             </div>        
 
             <div className="HomeFormRadio">
-              <input
-                type="radio"
-                value="medium"
-                checked={puzzleSize === "medium"}
-                onChange={onChangePuzzleSize}
-              />
-              <div>medium [20x15] 25-ish words</div>
+              <label>
+                <input
+                  type="radio"
+                  value="medium"
+                  checked={puzzleSize === "medium"}
+                  onChange={onChangePuzzleSize}
+                />
+                  medium [20x15] 25-ish words 
+              </label>
             </div>  
-
             
             <div className="HomeFormRadio">
-              <input
-                type="radio"
-                value="large"
-                checked={puzzleSize === "large"}
-                onChange={onChangePuzzleSize}
-              />
-              <div>large [23x18] 35-ish words</div>
+              <label>
+                <input
+                  type="radio"
+                  value="large"
+                  checked={puzzleSize === "large"}
+                  onChange={onChangePuzzleSize}
+                />
+                large [23x18] 35-ish words
+              </label>
             </div>  
           </div>
 
+          <div><b>Puzzle Output:</b></div>
           <div className="HomeForm__Checkbox">   
             <label>
                 <input
@@ -119,10 +124,21 @@ const PuzzleForm = () => {
             </label>
           </div>
 
+          <div className="HomeForm__Checkbox">   
+            <label>
+                <input
+                    type="checkbox"
+                    checked={sortChecked}
+                    onChange={(e) => setSortChecked(!sortChecked)}
+                    />
+                    Sort Alphabetical
+            </label>
+          </div>
+
         </div>
 
         <div style={{marginTop:"15px"}}>
-          <div className="HomeForm__Label">Words:</div>
+          <div className="HomeForm__Label">Word Entries:</div>
 
           <div>
             <button className="WordButton" style={{backgroundColor:"#287bbf"}} type="button" onClick={sortAlphabetical}>
@@ -132,19 +148,17 @@ const PuzzleForm = () => {
             <button className="WordButton" style={{backgroundColor:"#bf2899"}} type="button" onClick={createPuzzle}>
               ~ Done! Create Puzzle
             </button>
-      
 
             <div style={{paddingTop:"8px"}}>
-                Word Count: {words.filter(elem => elem).length}
+              [Word Count: {words.filter(elem => elem).length}]  [Letter Count: {words.join('').replaceAll(' ', '').length}]
             </div>
-
-            <div style={{paddingTop:"8px"}}>
-                Letter Count: {words.join('').replaceAll(' ', '').length}
-            </div>
-
+    
             <div className="HomeForm__WordsBox">
               <label>
-                <textarea className="HomeForm__WordInput" style={{resize:"none"}} rows={25} cols={35} value={wordArea} onChange={(e) => {
+                <textarea 
+                  className="HomeForm__WordInput" 
+                  maxLength={4000}
+                  style={{resize:"none"}} rows={25} cols={35} value={wordArea} onChange={(e) => {
                     setWordArea(e.target.value);
                     setWords(e.target.value.split('\n'));
                 }}/>

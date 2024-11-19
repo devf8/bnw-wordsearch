@@ -1,5 +1,5 @@
 
-const createPuzzle = (title, words, rows = 25, cols = 15, puzzleSize = null, diagonal = true) => {
+const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, diagonal = true, sortAlphabetical = true) => {
     if (words.length < 1) {
         return {
             message: "Please add words."
@@ -9,6 +9,7 @@ const createPuzzle = (title, words, rows = 25, cols = 15, puzzleSize = null, dia
     let open = ' ';
     let letterPool = [];
     let mixWords = true;
+    let maxWordLength = 12;
     let message = null;
 
     if (puzzleSize !== null) {
@@ -18,8 +19,8 @@ const createPuzzle = (title, words, rows = 25, cols = 15, puzzleSize = null, dia
                 cols = 12;
                 break;
             case 'medium':
-                rows = 18;
-                cols = 17;
+                rows = 20;
+                cols = 15;
                 break;
             case 'large':
                 rows = 23;
@@ -34,19 +35,38 @@ const createPuzzle = (title, words, rows = 25, cols = 15, puzzleSize = null, dia
     let wordSearch = createMatrix(rowCount, colCount, open);
     let wordsInfo = [];
     let totalLetters = rowCount * colCount;
+    let solutions = {
+        firstLetters: [],
+        middleLetters: []
+    };
 
-    words.sort();
+    if (sortAlphabetical) {
+        words.sort();
+    }
+
+    let maxedWords = "";
+
     words.forEach((word, w) => {
-        words[w] = word.toUpperCase();
+        let upWord = word.toUpperCase();
+
+        if (upWord.trim().length > maxWordLength) {
+            maxedWords += `"${upWord}" `;
+        }
+
+        words[w] = upWord;
 
         wordsInfo.push({
             key: w,
-            display: word.toUpperCase().trim(),
-            word: word.toUpperCase().replaceAll(' ', ''),
+            display: upWord.trim(),
+            word: upWord.replaceAll(' ', ''),
             placement: [],
             placed: false
         });
     });
+
+    if (maxedWords !== '') {
+        return {message: `Some words are above max length ${maxWordLength}: ${maxedWords}`};
+    }
 
     letterPool = words.join('').replaceAll(' ','');
 
@@ -111,7 +131,8 @@ const createPuzzle = (title, words, rows = 25, cols = 15, puzzleSize = null, dia
                     //first letter. dont search
                     if (j == 0) {
                         if (wordSearch[tempRow][tempCol] == open
-                            || (mixWords && wordSearch[tempRow][tempCol] == word[j])) {
+                            || (mixWords 
+                                && wordSearch[tempRow][tempCol] == word[j])) {
                             letterPlaced = true;
                             break;
                         } else {
@@ -177,14 +198,12 @@ const createPuzzle = (title, words, rows = 25, cols = 15, puzzleSize = null, dia
                         continue;
                     }
 
-                    let currPos = createPos(tempRow,tempCol);
-
                     if (
                         //if currPos is open & currPos not in letterHistory yet
                         (
-                            (wordSearch[tempRow][tempCol] === open && letterHistory.indexOf(currPos) === -1)
-                        //OR if mixWords &  currPos has the same letter &  
-                            || (mixWords && wordSearch[tempRow][tempCol] === word[j])
+                            letterHistory.indexOf(createPos(tempRow,tempCol)) === -1
+                            && (wordSearch[tempRow][tempCol] === open 
+                                || (mixWords && wordSearch[tempRow][tempCol] === word[j]))
                         )
                     ) {
                         letterPlaced = true;
@@ -210,7 +229,17 @@ const createPuzzle = (title, words, rows = 25, cols = 15, puzzleSize = null, dia
                     let pos = parsePos(letterPos);
                     wordSearch[pos[0]][pos[1]] = word[idx];
 
-                
+                    if (idx == 0) {
+                        solutions.firstLetters.push(letterPos);
+
+                        //do not mix first letters
+                        if (mixWords && availableStarts.indexOf(letterPos) !== -1) {
+                            availableStarts.splice(availableStarts.indexOf(letterPos), 1);
+                        }
+                    } else {
+                        solutions.middleLetters.push(letterPos);
+                    }
+
                     //do only when no mixWords
                     if (!mixWords && availableStarts.indexOf(letterPos) !== -1) {
                         availableStarts.splice(availableStarts.indexOf(letterPos), 1);
@@ -263,6 +292,7 @@ const createPuzzle = (title, words, rows = 25, cols = 15, puzzleSize = null, dia
             totalSize: totalLetters,
             totalLetters: letterPool.length,
             puzzle: wordSearch, 
+            solutions: solutions
         }
         
     }
@@ -304,5 +334,7 @@ const createMatrix = (rows, cols, fill) => {
 
 
 export default {
-  createPuzzle
+  createPuzzle,
+  createPos,
+  parsePos
 };
