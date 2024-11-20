@@ -1,13 +1,24 @@
+:root {
+  --LLetterBoxSize: 22px;
+  --LLetterSize: 18px;
+
+  --MLetterBoxSize: 24px;
+  --MLetterSize: 20px;
+  --MWordSize: 16px;
+}
+
 * {
   font-family: 'Courier New', Courier, monospace;
+  position:relative;
+  z-index: 0;
 }
 
 body {
-  background-color: #f1f1f1;
+  background-color: #ffffff;
 }
 
 .PuzzleTitle {
-  min-height: 20px;
+  min-height: 22px;
   text-align: center;
   font-size: 19px;
   font-weight: bold;
@@ -26,7 +37,7 @@ body {
 
 .Puzzle {
   text-align: center;
-  padding:7px;
+  padding:6px;
   border:2px solid black;
   width:fit-content;  
   display: flex;
@@ -39,55 +50,109 @@ body {
   flex-wrap: nowrap;
 }
 
-.PuzzleLetter{
-  width:24px;
+
+.PuzzleLetterBox{
+  position:relative;
+  width: var(--MLetterBoxSize);
+  height: var(--MLetterBoxSize);
   display: block;
-  font-size: 18px;
+  font-size: var(--MLetterSize);
   font-weight: bold;
+  /* clip-path: polygon(20% 0, 65% 46%, 46% 67%, 0 21%, 0 0); */
+}
+
+/* for override */
+.PuzzleLetterBox--Large{
+  width: var(--LLetterBoxSize);
+  height: var(--LLetterBoxSize);
+  font-size: var(--LLetterSize);
+}
+
+
+.PuzzleLetter{
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .PuzzleLetter--First{
-  color: red;
+  outline: 2px solid #000000;
+  outline-offset: -2px;
+  border-radius: 20px;
+  /* z-index: 3; */
 }
 
 .PuzzleLetter--Middle{
-  color: black;
+  outline: 2px solid #ffffff;
+  outline-offset: -2px;
 }
 
 .PuzzleLetter--Out{
-  color: #c9c9c9;
+  outline: 2px solid #ffffff;
+  outline-offset: -2px;
+  color: #b7b7b7;
 }
+
+
 
 .PuzzleWord--Solution{
   color: black;
 }
 .PuzzleWord--Solution::first-letter {
-  color: red;
+  /* color: red; */
 }
 
 .PuzzleWordsBox {
-  /* padding-top:13px; */
   border:2px solid #c6c6c6;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   height: fit-content;
-  max-height:190px;
+  max-height:200px;
   width: fit-content;
 }
 
-.PuzzleWord {
-  font-size: 14px;
-  text-align: left;
-  padding-left: 20px;
-  padding-right: 5px;
+.PuzzleWordsBox--Hide {
+  display: none;
 }
 
+.PuzzleWord {
+  font-size: var(--MWordSize);
+  text-align: left;
+  padding-left: 18px;
+  padding-right: 4px;
+}
+
+/* ===For printing ==============*/
 .PuzzleImage {
-  /* background-color: rgb(183, 183, 183); */
+  background-color: #ffffff;
   /* A5 ratio */
-  width: 530px;
-  height:751px;
+  width: 570px;
+  height: 808px;
+}
+
+.PuzzleImage .PuzzleLetter--First{
+  outline: 2px solid #000000;
+}
+
+.PuzzleImage .PuzzleLetter--Middle{
+  /* color: black;   */
+  outline: 2px solid #ffffff;
+}
+.PuzzleImage .PuzzleLetter--Out{
+  color: #cdcdcd;
+  outline: 2px solid #ffffff;
+}
+
+
+.PuzzleImage .PuzzleWordsBox {
+  max-height:140px;
+}
+
+.PuzzleImage .PuzzleWord {
+  font-size: 13px;
 }
 
 .PuzzleImage .PuzzleLayout{
@@ -170,9 +235,8 @@ body {
 }
 
 .HomeForm__Input {
-  width: 180px;
   display:inline-block;
-  text-align: right;
+  width: 90%;
 }
 
 .HomeForm__WordInput {
@@ -227,18 +291,16 @@ body {
   font-weight: bold;
   position: relative;
   animation-name: bounce1;
-  animation-duration: 0.08s;
+  animation-duration: 0.3s;
   animation-iteration-count: infinite;
-  animation-direction: alternate;  
 }
 
 .HeaderLetter2 {
   font-weight: bold;
   position: relative;
   animation-name: bounce2;
-  animation-duration: 0.08s;
+  animation-duration: 0.3s;
   animation-iteration-count: infinite;
-  animation-direction: alternate;  
 }
 
 
@@ -250,13 +312,15 @@ body {
 }
 
 @keyframes bounce1 {
-  0%   {color:#6e6e6e; top:5px;}
-  100% {top:3px;}
+  0%   {color:#6e6e6e; top:-1px;}
+  50%   {color:#6e6e6e; top:1px;}
+  100%   {color:#6e6e6e; top:-1px;}
 }
 
 @keyframes bounce2 {
-  0%   {top:3px;}
-  100% {color:#6e6e6e; top:5px;}
+  0%   {top:1px;}
+  50%   {color:#6e6e6e; top:-1px;}
+  100%   {top:1px;}
 }
 
 @keyframes go {
@@ -273,8 +337,13 @@ body {
     font-size: 16px;
   }
 
-  .PuzzleBody .PuzzleLetter{
+  .PuzzleBody .PuzzleLetterBox{
     width:17px;
+    height:17px;
+    font-size: 13px;
+  }
+
+  .PuzzleBody .PuzzleLetter{
     font-size: 13px;
   }
 
@@ -285,4 +354,59 @@ body {
   .PuzzleBody .PuzzleWord {
     font-size: 13px;
   }
+}
+
+
+.PuzzleLetter--Color1{
+  background-color: rgb(99, 224, 255);
+}
+.PuzzleLetter--Color2{
+  background-color: rgb(254, 254, 127);
+}
+
+.PuzzleLetter--Color3{
+  background-color: rgb(186, 186, 186);
+}
+
+.PuzzleLetter--Color4{
+  background-color: rgb(126, 255, 152);
+}
+
+.PuzzleLetter--Color5{
+  background-color: rgb(219, 99, 255);
+  /* color:white; */
+}
+
+.PuzzleLetter--Color6{
+  background-color: rgb(225, 182, 255);
+}
+
+.PuzzleLetter--Color7{
+  background-color: rgb(225, 79, 186);
+  /* color: white; */
+}
+
+.PuzzleLetter--Color8{
+  background-color: rgb(117, 174, 117);
+  /* color: white; */
+}
+
+.PuzzleLetter--Color9{
+  background-color: rgb(157, 151, 237);
+  /* color: white; */
+}
+
+
+.PuzzleLetter--Color10{
+  background-color: rgb(255, 114, 114);
+  /* color: white; */
+}
+
+.PuzzleLetter--Color11{
+  background-color: rgb(255, 200, 0);
+}
+
+.PuzzleLetter--Color12{
+  background-color: rgb(250, 191, 95);
+  /* color: white; */
 }

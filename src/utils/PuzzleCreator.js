@@ -1,5 +1,5 @@
 
-const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, diagonal = true, sortAlphabetical = true, mix = true) => {
+const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, diagonal = true, sortAlphabetical = true, mix = true) => {
     if (words.length < 1) {
         return {
             message: "Please add words."
@@ -8,9 +8,11 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
 
     let open = ' ';
     let letterPool = [];
-    let mixWords = mix;
+    let mixWords = false; //wew
+    let minWordLength = 2;
     let maxWordLength = 16;
     let message = null;
+    let colors = 11;
 
     if (puzzleSize !== null) {
         switch (puzzleSize) {
@@ -19,12 +21,12 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
                 cols = 12;
                 break;
             case 'medium':
-                rows = 20;
-                cols = 15;
+                rows = 18;
+                cols = 18;
                 break;
             case 'large':
                 rows = 23;
-                cols = 18;
+                cols = 20;
                 break;
         }
     }
@@ -40,36 +42,51 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
         middleLetters: []
     };
 
+    let maxedWords = "";
+
+    words = words.filter(elem => cleanWord(elem) !== '');
+
+    console.log(words);
+    //clean
+    words.forEach((word, w) => {
+        let upWord = word.toUpperCase().trim();
+        words[w] = upWord;
+
+        let cleaned = cleanWord(word);
+
+        if (cleaned.length < minWordLength || cleaned.length > maxWordLength) {
+            maxedWords += `[${upWord}] `;
+        }
+    });
+
+    if (maxedWords !== '') {
+        return {message: `Some words are not within required length ${minWordLength}-${maxWordLength}: ${maxedWords}`};
+    }
+
     if (sortAlphabetical) {
         words.sort();
     }
 
-
-    let maxedWords = "";
+    let colorCount = 0;
 
     words.forEach((word, w) => {
-        let upWord = word.toUpperCase();
-
-        if (upWord.replaceAll(' ', '').length > maxWordLength) {
-            maxedWords += `"${upWord}" `;
+        if (colorCount == colors) {
+            colorCount = 0;
         }
-
-        words[w] = upWord;
 
         wordsInfo.push({
             key: w,
-            display: upWord.trim(),
-            word: upWord.replaceAll(' ', ''),
+            display: word,
+            word: cleanWord(word),
             placement: [],
-            placed: false
+            placed: false,
+            color: colorCount
         });
+
+        colorCount++;
     });
 
-    if (maxedWords !== '') {
-        return {message: `Some words are above max length ${maxWordLength}: ${maxedWords}`};
-    }
-
-    letterPool = words.join('').replaceAll(' ','');
+    letterPool = cleanWord(words.join(''));
 
     if (totalLetters < letterPool.length) {
         return {
@@ -106,10 +123,12 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
 
         while (wordAvailStarts.length > 0) {
 
-            let startPoint = Math.floor(Math.random() * wordAvailStarts.length);
+            let startPoint =  genRand(wordAvailStarts.length);
             startPoint = parsePos(wordAvailStarts[startPoint]);
+
             let row = startPoint[0];
             let col = startPoint[1];
+
 
             let letterHistory = [];
             wordPlaced = false;
@@ -118,15 +137,21 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
                 wordAvailStarts.splice(wordAvailStarts.indexOf(createPos(row,col)), 1);
             }
 
+            let prevPos = null;
+
             //each letter of word
             for (let  j= 0; j < word.length; j++) {
                 let tempRow = row;
                 let tempCol = col;
-                let caseAttempt = [0,1,2,3];
+                let caseAttempt = [1,3,5,7];
+                let multiplier = 2;
                 if (diagonal) {
-                    caseAttempt = caseAttempt.concat([4,5,6,7]);
+                    caseAttempt = caseAttempt.concat([0,2,4,6]);
+                    multiplier = 1;
                 }
-                let letterPlaced = false;          
+
+                let maxCases = caseAttempt.length;
+                let letterPlaced = false;
 
                 while (caseAttempt.length > 0) {
                     //first letter. dont search
@@ -142,57 +167,74 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
                         }
                     }
 
-                    //one of the 8 possible next steps
-                    let caseIdx = Math.floor(Math.random() * caseAttempt.length);
-                    let nextPos = caseAttempt[caseIdx];
+
+                    let nextStep = genRand(100);
+        
+                    if (nextStep < 20) {
+                        prevPos = addToCase(maxCases, prevPos, -1*multiplier);
+                    } else if (nextStep < 40) {
+                        prevPos = addToCase(maxCases, prevPos, +1*multiplier);
+                    } else if (nextStep < 70) {
+                        //do nothing
+                    } else {
+                        prevPos = caseAttempt[genRand(caseAttempt.length)];
+                    } 
+
+                    //make nextCase to prevPos
+                    let nextCase = caseAttempt.indexOf(prevPos) !== -1 ? caseAttempt.indexOf(prevPos) : genRand(caseAttempt.length);
+
+                    nextCase = genRand(caseAttempt.length);
+
+        
+                    let nextPos = caseAttempt[nextCase];
+                    caseAttempt.splice(nextCase, 1);
 
                     tempRow = row;
                     tempCol = col;
 
                     switch (nextPos) {
-                        case 0:
-                            tempRow--;
-                            break;
-                        case 1:
-                            tempCol++;
-                            break;
-                        case 2:
-                            tempRow++;
-                            break;
-                        case 3:
-                            tempCol--;
-                            break;
-                        case 4:
+                        case 0: // up-left
                             if (inHistory(letterHistory, row-1,col) && inHistory(letterHistory, row, col-1)) {
                                 break;
                             }
                             tempRow--;
                             tempCol--;
                             break;
-                        case 5:
+                        case 1: // up
+                            tempRow--;
+                            break;
+                        case 2: // up right
                             if (inHistory(letterHistory, row-1,col) && inHistory(letterHistory, row, col+1)) {
                                 break;
                             }
                             tempRow--;
                             tempCol++;
                             break;
-                        case 6:
-                            if (inHistory(letterHistory, row,col-1) && inHistory(letterHistory, row+1, col)) {
-                                break;
-                            }
-                            tempRow++;
-                            tempCol--;
+                        case 3: // right
+                            tempCol++;
                             break;
-                        case 7:
-                            if (inHistory(letterHistory, row+1,col) && inHistory(letterHistory, row, col+1)) {
+                           
+                        case 4: // down-right
+                            if (inHistory(letterHistory, row,col+1) && inHistory(letterHistory, row+1, col)) {
                                 break;
                             }
                             tempRow++;
                             tempCol++;
                             break;
+                        case 5: // down
+                            tempRow++;
+                            break;
+                        case 6: // down-left
+                            if (inHistory(letterHistory, row+1,col) && inHistory(letterHistory, row, col-1)) {
+                                break;
+                            }
+                            tempRow++;
+                            tempCol--;
+                            break;
+                        case 7: // left
+                            tempCol--;
+                            break;
                     }
-
-                    caseAttempt.splice(caseIdx, 1);
 
                     // if new row and col are overbounds, continue iteration.
                     if (overBounds(tempRow, tempCol)) {
@@ -208,6 +250,8 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
                         )
                     ) {
                         letterPlaced = true;
+                        prevPos = nextPos;
+
                         break;
                     }
             
@@ -265,7 +309,7 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
         if (wordPlaced) {
             console.log(`~~~ Word ${word} (${word.length}) placed. iterations: ${iterations}`);
         } else {
-            console.log(`~~~ Word ${word} (${word.length}) is unplaced. iterations: ${iterations}`);
+            console.log(`~!! Word ${word} (${word.length}) is UNPLACED. iterations: ${iterations}`);
         }
     }) //end words.forEach;
 
@@ -274,7 +318,7 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
         wordSearch.forEach((row, i) => {
             row.forEach((col, j) => {
                 if (wordSearch[i][j] === open) {
-                    let randLetter = Math.floor(Math.random() * letterPool.length);
+                    let randLetter = genRand(letterPool.length);
                     wordSearch[i][j] = letterPool[randLetter];
                 }
             })
@@ -286,6 +330,7 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
         message,
         puzzle: {
             title: title,
+            size: puzzleSize,
             rows: rows,
             cols: cols,
             words: words,
@@ -298,6 +343,35 @@ const createPuzzle = (title, words, rows = 20, cols = 15, puzzleSize = null, dia
         
     }
 };
+
+// number from 0 to (maxrange - 1)
+const genRand = (maxRange) => {
+    return Math.floor(Math.random() * maxRange);
+}
+
+const addToCase = (maxCase, currCase, toAdd) => {
+    currCase += toAdd;
+
+    if (currCase < 0) {
+        currCase = maxCase - currCase
+    }
+
+    if (currCase > maxCase) {
+        currCase = currCase - maxCase
+    }
+
+    return currCase;
+}
+
+const cleanWord = (word, removeSpaces = true) => {
+    let clean = word.replaceAll(/[ '",!?-]/g, '').trim().toUpperCase();
+
+    if (removeSpaces) {
+        return clean.replaceAll(' ', '');
+    }
+
+    return clean;
+}
 
 const createPos = (row, col) => { 
     return row + ',' + col;
@@ -318,6 +392,19 @@ const inHistory = (history, row, col) => {
     }
 };
 
+const getWordInfoByPos = (wordsInfo, toFind) => {
+    let getWordInfo = false;
+
+    wordsInfo.forEach((wordInf) => {
+        if (wordInf.placement.indexOf(toFind) !== -1 ) {
+            getWordInfo = wordInf;
+            return;
+        }
+    })
+
+    return getWordInfo;
+}
+
 const createMatrix = (rows, cols, fill) => { 
     let newMatrix = [];
     //create matrix
@@ -332,10 +419,10 @@ const createMatrix = (rows, cols, fill) => {
     return newMatrix;
 };
 
-
-
 export default {
-  createPuzzle,
-  createPos,
-  parsePos
+    cleanWord,
+    createPuzzle,
+    createPos,
+    parsePos,
+    getWordInfoByPos
 };

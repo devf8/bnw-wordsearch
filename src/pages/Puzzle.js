@@ -1,7 +1,8 @@
 import {useLocation} from 'react-router-dom';
 import PuzzleCreator from '../utils/PuzzleCreator';
 import { useState, useEffect } from 'react';
-import html2canvas from 'html2canvas';
+import domtoimage from 'dom-to-image';
+import FileSaver from 'file-saver';
 
 const Puzzle = (props) => {
   // const { state } = props.location;
@@ -12,7 +13,7 @@ const Puzzle = (props) => {
   const cheatText = "Cheating!";
 
   // console.log(puzzle);
-  const cheatHeader = cheatText.split('').map((word, w) => <div style={{display:"inline-block"}} className={w % 2 == 0 ? 'HeaderLetter' : 'HeaderLetter2'}>{word}</div>);
+  const cheatHeader = cheatText && cheatText.split('').map((word, w) => <div style={{display:"inline-block"}} className={w % 2 == 0 ? 'HeaderLetter' : 'HeaderLetter2'}>{word}</div>);
 
   const getLetterClass = (row, col) => {
     if (puzzle.solutions.firstLetters.indexOf(PuzzleCreator.createPos(row,col)) !== -1) {
@@ -24,24 +25,26 @@ const Puzzle = (props) => {
     return 'PuzzleLetter--Out';
   }
 
-  const saveAsImage = async () => {
+  const saveAsImage =  () => {
     setPrinting(true);
-
-    const toPrint = document.getElementById('puzzleImage');
+    var toPrint = document.getElementById('puzzleImage');
     toPrint.classList.replace("PuzzleBody", "PuzzleImage");
 
-    const canvas = await html2canvas(toPrint);
-    const data = canvas.toDataURL('image/png');
+    var scale = 2;
 
-    const link = document.createElement('a');
-    link.href = data;
-    link.download = `${puzzle.title ? puzzle.title.replace(/[^a-zA-Z0-9]/g, '-') : 'bnwf8-' + Date.now()}`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    domtoimage.toBlob(toPrint, {
+      width: toPrint.clientWidth * scale,
+      height: toPrint.clientHeight * scale,
+      style: {
+        transform: 'scale('+scale+')',
+        transformOrigin: 'top left',
+      }
+      }).then(function (blob) {
+        FileSaver.saveAs(blob, `bnwf8-${puzzle.title ? puzzle.title.replace(/[^a-zA-Z0-9]/g, '-') : Date.now()}.png`);
+        toPrint.classList.replace("PuzzleImage", "PuzzleBody");
+        setPrinting(false);
+    });
 
-    toPrint.classList.replace("PuzzleImage", "PuzzleBody");
-    setPrinting(false);
   }
 
   return <>
@@ -50,39 +53,53 @@ const Puzzle = (props) => {
         Save Image
       </button>
       <button className="PuzzleSolution" type="button" onClick={(e) => setShowSolutions(!showSolutions)}>
-        Show Solution
+        {showSolutions ? 'Hide' : 'Show'} Solution
       </button>
       <div style={{clear:"both"}}></div>
-      <div id="puzzleImage" className='PuzzleBody'>
-        <div id="puzzleTitle" className='PuzzleTitle'>
-          {!printing && showSolutions ? cheatHeader : puzzle.title}
-        </div>
-        <div className='PuzzleLayout'>
-          <div className="Puzzle">
-            {puzzle.puzzle.map((row, r) => {
-              return <div className="PuzzleRow">
-                {row.map((col, c) => {
-                  return <>
-                    <div className={'PuzzleLetter ' + (showSolutions && getLetterClass(r,c))}>
-                      {col}
-                    </div>
-                  </>
-                })}
-              </div>
-            })}
+      <div id="puzzleImage" className={'PuzzleBody'}>
+        <div className='PuzzleScale'>
+          <div id="puzzleTitle" className='PuzzleTitle'>
+            {!printing && showSolutions  && cheatHeader ? cheatHeader : puzzle.title}
           </div>
-          <div className="PuzzleWordsBox">
-                <div style={{fontWeight:"bold"}} className="PuzzleWord">
-                  {/* check how many placed */}
-                  {puzzle.wordsInfo.filter((wordInf) => wordInf.placed).length} WORDS
+          <div className='PuzzleLayout'>
+            <div className="Puzzle">
+              {puzzle.puzzle.map((row, r) => {
+                return <div className="PuzzleRow">
+                  {row.map((col, c) => {
+                    let colorClass = '';
+
+                    if (showSolutions) {
+                      let foundWordInfo = PuzzleCreator.getWordInfoByPos(puzzle.wordsInfo, PuzzleCreator.createPos(r,c));
+                      if (foundWordInfo) {
+                        colorClass = `PuzzleLetter--Color${foundWordInfo.color+1}`;
+                      } 
+
+                      colorClass += ` ${getLetterClass(r,c)}`
+                    }
+
+                    return <>
+                      <div className={`PuzzleLetterBox ${colorClass} ${puzzle.size == 'large' && 'PuzzleLetterBox--Large'}`}>
+                        <div className={`PuzzleLetter`}>
+                            {col}
+                        </div>
+                      </div>
+                    </>
+                  })}
                 </div>
-            {puzzle.wordsInfo.map((wordInf, w) => {
-              return <>
-                <div className={"PuzzleWord " + (showSolutions ? ' PuzzleWord--Solution' : '')}>
-                  {wordInf.placed && wordInf.display}
-                </div>
-              </>
-            })}
+              })}
+            </div>
+            <div className={'PuzzleWordsBox'}>
+                  <div style={{fontWeight:"bold"}} className="PuzzleWord">
+                    {puzzle.wordsInfo.filter((wordInf) => wordInf.placed).length} WORDS
+                  </div>
+              {puzzle.wordsInfo.map((wordInf, w) => {
+                return <>
+                  <div className={"PuzzleWord " + (showSolutions ? ' PuzzleWord--Solution' : '')}>
+                    {wordInf.placed && wordInf.display}
+                  </div>
+                </>
+              })}
+            </div>
           </div>
         </div>
       </div>

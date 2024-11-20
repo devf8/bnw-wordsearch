@@ -1,4 +1,4 @@
-import {  useState, useReducer } from 'react';
+import {  useState, useReducer, useEffect } from 'react';
 import WordInput from './WordInput';
 import PuzzleCreator from '../utils/PuzzleCreator';
 import {useNavigate} from 'react-router-dom';
@@ -16,20 +16,27 @@ const PuzzleForm = () => {
     const [sortChecked, setSortChecked] = useState(true);
     const [formDone, setFormDone] = useState(false);
 
-    const header = "Welcome to bent n wiggly word search generator by F8"
+    const header = "bent n wiggly word search generator by F8";
 
     function addNewWord() {
         setWords([...words, '']);
     }        
 
     const sortAlphabetical = () => {
-        let newWords = [...words];
-
-        newWords = newWords.filter(elem => elem);
+        let newWords = cleanWordsInput(words);
         newWords = newWords.sort();
-
         setWordArea(newWords.join('\n'));
         setWords(newWords); 
+    }
+
+    //remove empty, trim, and set to uppercase
+    const cleanWordsInput = (words) => {
+      let newWords = [...words];
+      newWords = newWords.filter(elem => PuzzleCreator.cleanWord(elem) !== '');
+      newWords.forEach((word, w) => {
+        newWords[w] = word.toUpperCase().trim();
+      });
+      return newWords;
     }
 
     const createPuzzle = () => {
@@ -63,17 +70,15 @@ const PuzzleForm = () => {
         <div className="HomeForm" style={{textAlign:"center"}}>
           <div >
             <div>
-              <div>            
-                <div className="HomeForm__Label"><b>Puzzle Title</b></div>
-                  <input
-                      className="HomeForm__Input"
-                      type="text" 
-                      value={title}
-                      placeholder='Input Title'
-                      maxLength={40}
-                      onChange={(e) => setTitle(e.target.value)}
-                  />
-              </div>
+              <div className="HomeForm__Label"><b>Puzzle Title:</b></div>
+                <input
+                    className="HomeForm__Input"
+                    type="text" 
+                    value={title}
+                    placeholder='Input Title'
+                    maxLength={40}
+                    onChange={(e) => setTitle(e.target.value)}
+                />
 
 
               <div className="HomeFormRadioGroup">
@@ -98,7 +103,7 @@ const PuzzleForm = () => {
                       checked={puzzleSize === "medium"}
                       onChange={onChangePuzzleSize}
                     />
-                      medium [20x15] 25-ish words 
+                      medium [18x18] 25-ish words 
                   </label>
                 </div>  
                 
@@ -110,7 +115,7 @@ const PuzzleForm = () => {
                       checked={puzzleSize === "large"}
                       onChange={onChangePuzzleSize}
                     />
-                    large [23x18] 35-ish words
+                    large [23x20] 35-ish words
                   </label>
                 </div>  
               </div>
@@ -155,7 +160,7 @@ const PuzzleForm = () => {
                 </button>
 
                 <div style={{paddingTop:"8px"}}>
-                  [Word Count: {words.filter(elem => elem).length}]  [Letter Count: {words.join('').replaceAll(' ', '').length}]
+                  [Word Count: {words.filter(elem => elem).length}]  [Letter Count: {PuzzleCreator.cleanWord(words.join('')).length}]
                 </div>
         
                 <div className="HomeForm__WordsBox">
@@ -163,7 +168,8 @@ const PuzzleForm = () => {
                     <textarea 
                       className="HomeForm__WordInput" 
                       maxLength={4000}
-                      style={{resize:"none"}} placeholder="input one word per line" rows={20} cols={35} value={wordArea} onChange={(e) => {
+                      style={{resize:"none"}} placeholder="input one word entry per line" rows={20} cols={35} value={wordArea} onChange={(e) => {
+                        
                         setWordArea(e.target.value);
                         setWords(e.target.value.split('\n'));
                     }}/>
@@ -189,15 +195,17 @@ const PuzzleForm = () => {
           <div><b>Guidelines</b></div>         
           <div>
             <ul>
-              <li>Max word length: 16 chars</li>
-              <li>Spaces are supported.<br/>ex: "HELLO WORLD"</li>
+              <li>word entry length: 2-16 chars</li>
+              <li>Spaces and these special characters ('",-!?) 
+                are supported and do not count towards a word entry's length.</li>
               <br/>
+              <li>Image saving feature is formatted to work best with A5 paper size.</li>
               <br/>
               <li >
-                <a className='HomeLink' href="/being-cheesy.png" target="_blank">What is a bent and wiggly word search puzzle? Click this to see a sample solved puzzle.</a>
+                <a className='HomeLink' href="/bnwf8-cheesy-peasy.png" target="_blank">What is a bent and wiggly word search puzzle? Click this to see a sample solved puzzle.</a>
               </li>
               <br/>
-              <li><a className="HomeLink" href="https://github.com/fadimaranan/bnw-wordsearch" target="_blank">github project</a></li>
+              <li><a className="HomeLink" href="https://github.com/devf8/bnw-wordsearch" target="_blank">github</a></li>
             </ul>
           </div> 
         </div>
