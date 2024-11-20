@@ -199,11 +199,11 @@ const PuzzleForm = () => {
                 <a className='HomeLink' href="/bnwf8-cheesy-peasy.png" target="_blank">What is a bent and wiggly word search puzzle? Click this to see a sample solved puzzle.</a>
               </li>
               <br/>
-              <li>word entry length: 2-16 chars</li>
+              <li>Word entry length: 2-16 chars</li>
               <li>Spaces and these special characters ('",-!?) 
-                are supported and do not count towards a word entry's length.</li>
+                are supported.</li>
               <br/>
-              <li>Image saving feature is formatted to work best with A5 paper size.</li>
+              <li>Image download feature is formatted to work best with A5 paper size.</li>
               <br/>
               <li><a className="HomeLink" href="https://github.com/devf8/bnw-wordsearch" target="_blank">github</a></li>
             </ul>

@@ -50,7 +50,7 @@ const Puzzle = (props) => {
   return <>
     <div>
       <button className="PuzzleSave" type="button" onClick={saveAsImage}>
-        Save Image
+        Download Image
       </button>
       <button className="PuzzleSolution" type="button" onClick={(e) => setShowSolutions(!showSolutions)}>
         {showSolutions ? 'Hide' : 'Show'} Solution
@@ -78,7 +78,7 @@ const Puzzle = (props) => {
                     }
 
                     return <>
-                      <div className={`PuzzleLetterBox ${colorClass} ${puzzle.size == 'large' && 'PuzzleLetterBox--Large'}`}>
+                      <div key={c} className={`PuzzleLetterBox ${colorClass} ${puzzle.size == 'large' && 'PuzzleLetterBox--Large'}`}>
                         <div className={`PuzzleLetter`}>
                             {col}
                         </div>

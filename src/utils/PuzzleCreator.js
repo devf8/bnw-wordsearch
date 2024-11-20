@@ -145,6 +145,7 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
                 let tempCol = col;
                 let caseAttempt = [1,3,5,7];
                 let multiplier = 2;
+                
                 if (diagonal) {
                     caseAttempt = caseAttempt.concat([0,2,4,6]);
                     multiplier = 1;
@@ -167,7 +168,6 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
                         }
                     }
 
-
                     let nextStep = genRand(100);
         
                     if (nextStep < 20) {
@@ -184,7 +184,6 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
                     let nextCase = caseAttempt.indexOf(prevPos) !== -1 ? caseAttempt.indexOf(prevPos) : genRand(caseAttempt.length);
 
                     nextCase = genRand(caseAttempt.length);
-
         
                     let nextPos = caseAttempt[nextCase];
                     caseAttempt.splice(nextCase, 1);
