@@ -13,6 +13,8 @@ export default function TheApp() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="puzzle" element={<Puzzle />} />
+          <Route path="puzzle/:id" element={<Puzzle />} />
+          <Route path="*" element={<Home />}/>
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,19 +1,62 @@
-import {useLocation} from 'react-router-dom';
 import PuzzleCreator from '../utils/PuzzleCreator';
 import { useState, useEffect } from 'react';
 import domtoimage from 'dom-to-image';
 import FileSaver from 'file-saver';
+import {  useNavigate, useParams} from 'react-router-dom';
 
 const Puzzle = (props) => {
-  // const { state } = props.location;
-  const { state } = useLocation();
-  const puzzle = state.puzzle ;
+  const navigate = useNavigate();
+  const params = useParams();
+
+  let sessPuzzles = JSON.parse(sessionStorage.getItem(`puzzles`));
+  let maxIdx = sessPuzzles ? sessPuzzles.length-1 : 0;
+
+
+  let currIdx = sessPuzzles?.indexOf(params.id) !== -1 ? sessPuzzles?.indexOf(params.id) : maxIdx;
+  let puzzle = sessPuzzles ? JSON.parse(sessionStorage.getItem(sessPuzzles[currIdx])) : null;
+
+
   const [showSolutions, setShowSolutions] = useState(false);
   const [printing, setPrinting] = useState(false);
+  
   const cheatText = "Cheating!";
+  const cheatHeader = cheatText && cheatText.split('').map((word, w) => <div key={`head${w}`} style={{display:"inline-block"}} className={w % 2 === 0 ? 'HeaderLetter' : 'HeaderLetter2'}>{word}</div>);
 
-  // console.log(puzzle);
-  const cheatHeader = cheatText && cheatText.split('').map((word, w) => <div style={{display:"inline-block"}} className={w % 2 == 0 ? 'HeaderLetter' : 'HeaderLetter2'}>{word}</div>);
+  const goBack = () => {
+    navigate('/');
+  }
+
+  useEffect(() => {
+    if (!puzzle) {
+      navigate('/');
+      return;
+    }
+
+    let unplaced = "";
+    puzzle.wordsInfo.forEach((wordInf, w) => {
+      if (!wordInf.placed) {
+        unplaced += `[${wordInf.display}] `
+      }
+    });
+
+    if (unplaced) {
+      alert(`Some words could not be included in the puzzle. Try regenerating the puzzle or lowering the word/letter counts. Unplaced words: ${unplaced}`);
+    }
+  }, []);
+
+  const navPuzzle = (nav) => {
+    let puzIdx = currIdx;
+
+    puzIdx += nav;
+
+    if (puzIdx < 0) {
+      puzIdx = 0;
+    } else if (puzIdx > maxIdx) {
+      puzIdx = maxIdx;
+    }
+
+    navigate(`/puzzle/${sessPuzzles[puzIdx]}`);
+  }
 
   const getLetterClass = (row, col) => {
     if (puzzle.solutions.firstLetters.indexOf(PuzzleCreator.createPos(row,col)) !== -1) {
@@ -44,17 +87,30 @@ const Puzzle = (props) => {
         toPrint.classList.replace("PuzzleImage", "PuzzleBody");
         setPrinting(false);
     });
-
   }
 
-  return <>
+  return puzzle && <>
     <div>
-      <button className="PuzzleSave" type="button" onClick={saveAsImage}>
-        Download Image
-      </button>
-      <button className="PuzzleSolution" type="button" onClick={(e) => setShowSolutions(!showSolutions)}>
-        {showSolutions ? 'Hide' : 'Show'} Solution
-      </button>
+      <div>
+        <button className="PuzzleButton" type="button" onClick={goBack}>
+          {`<< Back`}
+        </button>
+        <button className="PuzzleSave" type="button" onClick={saveAsImage}>
+          Download Image
+        </button>
+        <button className="PuzzleButton" type="button" onClick={(e) => setShowSolutions(!showSolutions)}>
+          {showSolutions ? 'Hide' : 'Show'} Solution
+        </button>
+        <div style={{display:"inline-block"}}>
+          <button className={`PuzzleButton ${currIdx === 0 && 'PuzzleButton--Gray'}`} type="button" onClick={(e) => navPuzzle(-1)}>
+            {`<`}
+          </button>
+          <div style={{display:"inline-block"}}>{`${currIdx+1}/${sessPuzzles.length}`}</div>
+          <button className={`PuzzleButton ${currIdx === maxIdx && 'PuzzleButton--Gray'}`} type="button" onClick={(e) => navPuzzle(1)}>
+            {`>`}
+          </button>
+        </div>
+      </div>
       <div style={{clear:"both"}}></div>
       <div id="puzzleImage" className={'PuzzleBody'}>
         <div className='PuzzleScale'>
@@ -64,7 +120,7 @@ const Puzzle = (props) => {
           <div className='PuzzleLayout'>
             <div className="Puzzle">
               {puzzle.puzzle.map((row, r) => {
-                return <div className="PuzzleRow">
+                return <div key={`row${r}`} className="PuzzleRow">
                   {row.map((col, c) => {
                     let colorClass = '';
 
@@ -77,13 +133,12 @@ const Puzzle = (props) => {
                       colorClass += ` ${getLetterClass(r,c)}`
                     }
 
-                    return <>
-                      <div key={c} className={`PuzzleLetterBox ${colorClass} ${puzzle.size == 'large' && 'PuzzleLetterBox--Large'}`}>
-                        <div className={`PuzzleLetter`}>
-                            {col}
-                        </div>
+                    return <div key={`col${c}`} 
+                      className={`PuzzleLetterBox ${colorClass} ${puzzle.size === 'large' && 'PuzzleLetterBox--Large'}`}>
+                      <div key={`let${c}`} className={`PuzzleLetter`}>
+                          {col}
                       </div>
-                    </>
+                    </div>
                   })}
                 </div>
               })}
@@ -93,11 +148,9 @@ const Puzzle = (props) => {
                     {puzzle.wordsInfo.filter((wordInf) => wordInf.placed).length} WORDS
                   </div>
               {puzzle.wordsInfo.map((wordInf, w) => {
-                return <>
-                  <div className={"PuzzleWord " + (showSolutions ? ' PuzzleWord--Solution' : '')}>
-                    {wordInf.placed && wordInf.display}
-                  </div>
-                </>
+                return <div key={`wordinf${w}`} className={"PuzzleWord " + (showSolutions ? ' PuzzleWord--Solution' : '')}>
+                  {wordInf.placed && wordInf.display}
+                </div>
               })}
             </div>
           </div>

@@ -11,6 +11,7 @@
   font-family: 'Courier New', Courier, monospace;
   position:relative;
   z-index: 0;
+  margin: 0;
 }
 
 body {
@@ -26,7 +27,7 @@ body {
 }
 
 .PuzzleLayout {
-  /* margin:10px; */
+  margin-bottom:10px;
   text-align: center;
   display: flex;
   flex-wrap: wrap;
@@ -95,8 +96,6 @@ body {
   color: #b7b7b7;
 }
 
-
-
 .PuzzleWord--Solution{
   color: black;
 }
@@ -130,23 +129,11 @@ body {
 
 /* ===For printing ==============*/
 .PuzzleImage {
+  /* needs bg color */
   background-color: #ffffff;
   /* A5 ratio */
   width: 570px;
   height: 808px;
-}
-
-.PuzzleImage .PuzzleLetter--First{
-  outline: 2px solid #000000;
-}
-
-.PuzzleImage .PuzzleLetter--Middle{
-  /* color: black;   */
-  outline: 2px solid #ffffff;
-}
-.PuzzleImage .PuzzleLetter--Out{
-  color: #cdcdcd;
-  outline: 2px solid #ffffff;
 }
 
 .PuzzleImage .PuzzleWordsBox {
@@ -163,23 +150,26 @@ body {
 }
 
 .PuzzleSave {
-  margin:10px;
+  margin:12px;
   padding:6px;
-  background-color: #28bf73;
+  background-color: #4c9e11;
   color:white;
   font-weight:bold;
   border-radius: 4px;
-  float:right;
 }
 
-.PuzzleSolution {
-  margin:10px;
+.PuzzleButton {
+  margin:12px;
   padding:6px;
   background-color: #2876bf;
   color:white;
   font-weight:bold;
   border-radius: 4px;
-  float:right;
+}
+
+.PuzzleButton--Gray{
+  background-color: gray;
+  color:#b7b7b7
 }
 
 
@@ -205,12 +195,18 @@ body {
 
 .HomeLink {
   color:white;
-  text-underline-offset: 5px;
+  text-underline-offset: 4px;
 }
 
 .HomeFormRadio {
+  padding: 4px;
+  margin: 2px;
+  border-radius: 2px;
+  width:100%;
   display: flex;
   flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
 }
 
 .HomeHeader {
@@ -221,7 +217,7 @@ body {
   border-radius: 4px;
   background-color: #bce5f1;
   height: 100%;
-  padding:20px;
+  padding:18px;
 }
 
 .HomeForm--Guide {
@@ -231,7 +227,8 @@ body {
 }
 
 .HomeForm__Label {
-  width: 180px;
+  padding-top: 4px;
+  width: 100%;
   display:inline-block;
   font-weight: bold;
 }
@@ -246,6 +243,9 @@ body {
 }
 
 .HomeForm__Checkbox {
+  padding: 4px;
+  margin: 2px;
+  border-radius: 2px;
 }
 
 .HomeForm__WordsBox {
@@ -340,12 +340,8 @@ body {
   }
 
   .PuzzleBody .PuzzleLetterBox{
-    width:17px;
-    height:17px;
-    font-size: 13px;
-  }
-
-  .PuzzleBody .PuzzleLetter{
+    width:16px;
+    height:16px;
     font-size: 13px;
   }
 
@@ -356,8 +352,24 @@ body {
   .PuzzleBody .PuzzleWord {
     font-size: 13px;
   }
+
+  .PuzzleSave, .PuzzleButton{
+    margin:4px;
+  }
+
+  .HomeForm, .HomeForm--Guide {
+    padding:12px;
+  }
+  
 }
 
+@media only screen and (max-width: 370px) {
+  .PuzzleBody .PuzzleLetterBox{
+    width:14px;
+    height:14px;
+    font-size: 12px;
+  }
+}
 
 .PuzzleLetter--Color1{
   background-color: rgb(99, 224, 255);

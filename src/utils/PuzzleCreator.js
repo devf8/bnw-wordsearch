@@ -1,5 +1,5 @@
 
-const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, diagonal = true, sortAlphabetical = true, mix = true) => {
+const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, diagonal = true, sortAlphabetical = true, mixWords = false) => {
     if (words.length < 1) {
         return {
             message: "Please add words."
@@ -8,11 +8,11 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
 
     let open = ' ';
     let letterPool = [];
-    let mixWords = false; //wew
     let minWordLength = 2;
     let maxWordLength = 16;
     let message = null;
     let colors = 11;
+    let debug = true;
 
     if (puzzleSize !== null) {
         switch (puzzleSize) {
@@ -43,41 +43,41 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
     };
 
     let maxedWords = "";
+    let colorCount = 0;
 
+    letterPool = cleanWord(words.join(''));
+
+    if (totalLetters < letterPool.length) {
+        return {
+            message: "Too many letters. Maximum letter count for this puzzle size is: " + totalLetters
+        }
+    }
+    
     words = words.filter(elem => cleanWord(elem) !== '');
-
-    console.log(words);
-    //clean
+  
+    //clean and keep base arrangement
     words.forEach((word, w) => {
         let upWord = word.toUpperCase().trim();
         words[w] = upWord;
-
+ 
         let cleaned = cleanWord(word);
 
         if (cleaned.length < minWordLength || cleaned.length > maxWordLength) {
             maxedWords += `[${upWord}] `;
         }
-    });
 
-    if (maxedWords !== '') {
-        return {message: `Some words are not within required length ${minWordLength}-${maxWordLength}: ${maxedWords}`};
-    }
+        if (maxedWords !== '') {
+            return;
+        }
 
-    if (sortAlphabetical) {
-        words.sort();
-    }
-
-    let colorCount = 0;
-
-    words.forEach((word, w) => {
-        if (colorCount == colors) {
+        if (colorCount === colors) {
             colorCount = 0;
         }
 
         wordsInfo.push({
-            key: w,
-            display: word,
-            word: cleanWord(word),
+            display: upWord,
+            baseOrder: w,
+            word: cleaned,
             placement: [],
             placed: false,
             color: colorCount
@@ -86,13 +86,12 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
         colorCount++;
     });
 
-    letterPool = cleanWord(words.join(''));
-
-    if (totalLetters < letterPool.length) {
-        return {
-            message: "Too many letters. Maximum letter count for this size is: " + totalLetters
-        }
+    if (maxedWords !== '') {
+        return {message: `Some words are not within required length ${minWordLength}-${maxWordLength}: ${maxedWords}`};
     }
+
+    //sort by length for generating puzzle
+    wordsInfo.sort((a, b) => b.display.length - a.display.length);
 
     let availableStarts = [];
 
@@ -117,18 +116,15 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
         let word = wordInf.word;
         let exhausted = 0;
         let iterations = 1;
-        let wordHistory = [];
         let wordAvailStarts = [...availableStarts];
         let wordPlaced = false;
 
         while (wordAvailStarts.length > 0) {
-
-            let startPoint =  genRand(wordAvailStarts.length);
+            let startPoint = genRand(wordAvailStarts.length);
             startPoint = parsePos(wordAvailStarts[startPoint]);
 
             let row = startPoint[0];
             let col = startPoint[1];
-
 
             let letterHistory = [];
             wordPlaced = false;
@@ -156,10 +152,10 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
 
                 while (caseAttempt.length > 0) {
                     //first letter. dont search
-                    if (j == 0) {
-                        if (wordSearch[tempRow][tempCol] == open
+                    if (j === 0) {
+                        if (wordSearch[tempRow][tempCol] === open
                             || (mixWords 
-                                && wordSearch[tempRow][tempCol] == word[j])) {
+                                && wordSearch[tempRow][tempCol] === word[j])) {
                             letterPlaced = true;
                             break;
                         } else {
@@ -170,17 +166,16 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
 
                     let nextStep = genRand(100);
         
+                    //make pathing less crunchy
                     if (nextStep < 20) {
                         prevPos = addToCase(maxCases, prevPos, -1*multiplier);
                     } else if (nextStep < 40) {
                         prevPos = addToCase(maxCases, prevPos, +1*multiplier);
                     } else if (nextStep < 70) {
-                        //do nothing
-                    } else {
                         prevPos = caseAttempt[genRand(caseAttempt.length)];
                     } 
 
-                    //make nextCase to prevPos
+                    //make nextCase from prevPos
                     let nextCase = caseAttempt.indexOf(prevPos) !== -1 ? caseAttempt.indexOf(prevPos) : genRand(caseAttempt.length);
 
                     nextCase = genRand(caseAttempt.length);
@@ -268,12 +263,12 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
             } //end  for (let j = 0; j < word.length; j++)
 
             //place word
-            if (letterHistory.length == word.length) {
+            if (letterHistory.length === word.length) {
                 letterHistory.forEach((letterPos, idx) => {
                     let pos = parsePos(letterPos);
                     wordSearch[pos[0]][pos[1]] = word[idx];
 
-                    if (idx == 0) {
+                    if (idx === 0) {
                         solutions.firstLetters.push(letterPos);
 
                         //do not mix first letters
@@ -306,9 +301,9 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
         } // end while wordAvailStarts.length > 0
 
         if (wordPlaced) {
-            console.log(`~~~ Word ${word} (${word.length}) placed. iterations: ${iterations}`);
+            debug && console.log(`~~~ Word ${word} (${word.length}) placed. iterations: ${iterations}`);
         } else {
-            console.log(`~!! Word ${word} (${word.length}) is UNPLACED. iterations: ${iterations}`);
+            debug && console.log(`!!! Word ${word} (${word.length}) is UNPLACED. iterations: ${iterations}`);
         }
     }) //end words.forEach;
 
@@ -322,6 +317,12 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
                 }
             })
         });
+    }
+
+    if (sortAlphabetical) {
+        wordsInfo.sort((a, b) => a.display.localeCompare(b.display));
+    } else {
+        wordsInfo.sort((a, b) => a.baseOrder - b.baseOrder);
     }
 
     return {
