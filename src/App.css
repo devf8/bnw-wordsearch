@@ -1,9 +1,9 @@
 :root {
   --LLetterBoxSize: 22px;
-  --LLetterSize: 18px;
+  --LLetterSize: 15px;
 
   --MLetterBoxSize: 24px;
-  --MLetterSize: 20px;
+  --MLetterSize: 17px;
   --MWordSize: 16px;
 }
 
@@ -138,6 +138,7 @@ body {
 
 .PuzzleImage .PuzzleWordsBox {
   max-height:190px;
+  white-space: nowrap;
 }
 
 .PuzzleImage .PuzzleWord {

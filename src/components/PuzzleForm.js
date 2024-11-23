@@ -131,7 +131,7 @@ const PuzzleForm = () => {
                       checked={state.puzzleSize === "small"}
                       onChange={onChangePuzzleSize}
                     />
-                    small [12x12] 15-ish words
+                    small [12x12] 10-ish words
                   </label>
                 </div>        
 
@@ -143,7 +143,7 @@ const PuzzleForm = () => {
                       checked={state.puzzleSize === "medium"}
                       onChange={onChangePuzzleSize}
                     />
-                      medium [18x18] 25-ish words 
+                      medium [18x18] 20-ish words 
                   </label>
                 </div>  
                 
@@ -155,7 +155,7 @@ const PuzzleForm = () => {
                       checked={state.puzzleSize === "large"}
                       onChange={onChangePuzzleSize}
                     />
-                    large [23x20]35-ish words
+                    large [23x20]30-ish words
                   </label>
                 </div>  
               </div>

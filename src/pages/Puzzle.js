@@ -73,7 +73,7 @@ const Puzzle = (props) => {
     var toPrint = document.getElementById('puzzleImage');
     toPrint.classList.replace("PuzzleBody", "PuzzleImage");
 
-    var scale = 2;
+    var scale = 2.5;
 
     domtoimage.toBlob(toPrint, {
       width: toPrint.clientWidth * scale,
