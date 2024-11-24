@@ -171,7 +171,7 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
                         prevPos = addToCase(maxCases, prevPos, -1*multiplier);
                     } else if (nextStep < 40) {
                         prevPos = addToCase(maxCases, prevPos, +1*multiplier);
-                    } else if (nextStep < 60) {
+                    } else if (nextStep < 70) {
                         prevPos = caseAttempt[genRand(caseAttempt.length)];
                     } 
 
