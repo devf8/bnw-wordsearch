@@ -166,18 +166,21 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
 
                     let nextStep = genRand(100);
         
-                    //make pathing less crunchy
+                    // make pathing less crunchy. dec 7 2024
                     if (nextStep < 20) {
                         prevPos = addToCase(maxCases, prevPos, -1*multiplier);
                     } else if (nextStep < 40) {
                         prevPos = addToCase(maxCases, prevPos, +1*multiplier);
-                    } else if (nextStep < 70) {
+                    } else if (nextStep < 80) {
                         prevPos = caseAttempt[genRand(caseAttempt.length)];
-                    } 
+                    }
 
                     //make nextCase from prevPos
                     let nextCase = caseAttempt.indexOf(prevPos) !== -1 ? caseAttempt.indexOf(prevPos) : genRand(caseAttempt.length);
-        
+                    
+                    //testing
+                    // nextCase = genRand(caseAttempt.length);
+
                     let nextPos = caseAttempt[nextCase];
                     caseAttempt.splice(nextCase, 1);
 
