@@ -83,7 +83,7 @@ const Puzzle = (props) => {
         transformOrigin: 'top left',
       }
       }).then(function (blob) {
-        FileSaver.saveAs(blob, `bnwf8-${puzzle.title ? puzzle.title.replace(/[^a-zA-Z0-9]/g, '-') : Date.now()}.png`);
+        FileSaver.saveAs(blob, `bnwf8-${puzzle.title ? puzzle.title.replace(/[^a-zA-Z0-9]/g, '-') : Date.now()}` + `${showSolutions ? '-solution' : ''}` + `.png`);
         toPrint.classList.replace("PuzzleImage", "PuzzleBody");
         setPrinting(false);
     });
