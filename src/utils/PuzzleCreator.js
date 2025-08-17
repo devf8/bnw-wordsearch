@@ -11,8 +11,9 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
     let minWordLength = 2;
     let maxWordLength = 16;
     let message = null;
-    let colors = 11;
-    let debug = true;
+    //color randomizer max 
+    let colors = 6;
+    let debug = false;
 
     if (puzzleSize !== null) {
         switch (puzzleSize) {
@@ -43,7 +44,6 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
     };
 
     let maxedWords = "";
-    let colorCount = 0;
 
     letterPool = cleanWord(words.join(''));
 
@@ -54,6 +54,8 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
     }
     
     words = words.filter(elem => cleanWord(elem) !== '');
+
+    let colorCtr = 1;
   
     //clean and keep base arrangement
     words.forEach((word, w) => {
@@ -70,8 +72,8 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
             return;
         }
 
-        if (colorCount === colors) {
-            colorCount = 0;
+        if (colorCtr > colors) {
+            colorCtr = 1;
         }
 
         wordsInfo.push({
@@ -80,10 +82,10 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
             word: cleaned,
             placement: [],
             placed: false,
-            color: colorCount
+            color: colorCtr
         });
 
-        colorCount++;
+        colorCtr++;
     });
 
     if (maxedWords !== '') {
@@ -153,9 +155,8 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
                 while (caseAttempt.length > 0) {
                     //first letter. dont search
                     if (j === 0) {
-                        if (wordSearch[tempRow][tempCol] === open
-                            || (mixWords 
-                                && wordSearch[tempRow][tempCol] === word[j])) {
+                        if (wordSearch[tempRow][tempCol].letter === open
+                            || (mixWords && wordSearch[tempRow][tempCol].letter === word[j])) {
                             letterPlaced = true;
                             break;
                         } else {
@@ -243,8 +244,8 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
                         //if currPos is open & currPos not in letterHistory yet
                         (
                             letterHistory.indexOf(createPos(tempRow,tempCol)) === -1
-                            && (wordSearch[tempRow][tempCol] === open 
-                                || (mixWords && wordSearch[tempRow][tempCol] === word[j]))
+                            && (wordSearch[tempRow][tempCol].letter === open 
+                                || (mixWords && wordSearch[tempRow][tempCol].letter === word[j]))
                         )
                     ) {
                         letterPlaced = true;
@@ -269,7 +270,7 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
             if (letterHistory.length === word.length) {
                 letterHistory.forEach((letterPos, idx) => {
                     let pos = parsePos(letterPos);
-                    wordSearch[pos[0]][pos[1]] = word[idx];
+                    wordSearch[pos[0]][pos[1]].letter = word[idx];
 
                     if (idx === 0) {
                         solutions.firstLetters.push(letterPos);
@@ -301,6 +302,7 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
                 exhaustedTrigger = true;
                 break;
             };
+
         } // end while wordAvailStarts.length > 0
 
         if (wordPlaced) {
@@ -314,9 +316,9 @@ const createPuzzle = (title, words, rows = 18, cols = 18, puzzleSize = null, dia
     if (true) {
         wordSearch.forEach((row, i) => {
             row.forEach((col, j) => {
-                if (wordSearch[i][j] === open) {
+                if (wordSearch[i][j].letter === open) {
                     let randLetter = genRand(letterPool.length);
-                    wordSearch[i][j] = letterPool[randLetter];
+                    wordSearch[i][j].letter = letterPool[randLetter];
                 }
             })
         });
@@ -377,14 +379,15 @@ const cleanWord = (word, removeSpaces = true) => {
 }
 
 const createPos = (row, col) => { 
-    return row + ',' + col;
+    return 'pos_' + row + '_' + col;
 };
 
 /**
  * return array of 2 strings based on format. sample "12,3" first is row and second is col
  */
 const parsePos = (pos) => {
-    var intArr = pos.split(',').map(Number); 
+    pos = pos.replaceAll('pos_', '');
+    var intArr = pos.split('_').map(Number); 
     return intArr;
 };
 
@@ -411,10 +414,15 @@ const getWordInfoByPos = (wordsInfo, toFind) => {
 const createMatrix = (rows, cols, fill) => { 
     let newMatrix = [];
     //create matrix
-    for (let i = 0; i < rows; i++) {
+    for (let r = 0; r < rows; r++) {
         let newRow = [];
-        for (let j = 0; j < cols; j++) {
-            newRow.push(fill);
+        for (let c = 0; c < cols; c++) {
+            newRow.push(
+                { 
+                    id: createPos(r, c), 
+                    letter: fill 
+                }
+            );
         }
         newMatrix.push(newRow);
     }

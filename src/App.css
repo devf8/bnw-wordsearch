@@ -18,6 +18,10 @@ body {
   background-color: #ffffff;
 }
 
+.PuzzleControls {
+  height:85px;
+}
+
 .PuzzleTitle {
   min-height: 22px;
   text-align: center;
@@ -82,21 +86,21 @@ body {
 }
 
 .PuzzleLetter--First{
-  outline: 2px solid #000000;
+  /* outline: 2px solid #000000; */
   outline-offset: -2px;
   border-radius: 20px;
   /* z-index: 3; */
 }
 
 .PuzzleLetter--Middle{
-  outline: 2px solid #ffffff;
+  /* outline: 2px solid #ffffff; */
   outline-offset: -2px;
 }
 
 .PuzzleLetter--Out{
-  outline: 2px solid #ffffff;
+  /* outline: 2px solid #ffffff; */
   outline-offset: -2px;
-  color: #b7b7b7;
+  /* color: #b7b7b7; */
 }
 
 .PuzzleWord--Solution{
@@ -131,6 +135,31 @@ body {
 }
 
 /* ===For printing ==============*/
+.PrintingOverlay { 
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  display: none;
+
+}
+
+.PrintingOverlay--Show { 
+  display: flex;
+}
+
+.PrintingMessage {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+
 .PuzzleImage {
   /* needs bg color */
   background-color: #ffffff;
@@ -338,6 +367,110 @@ body {
   100% {background-color: #ff68d7;right:2px}
 }
 
+.PuzzleLetter--Color1{
+  stroke: rgb(99, 224, 255);
+}
+.PuzzleLetter--Color2{
+  stroke: rgb(254, 254, 127);
+}
+
+.PuzzleLetter--Color3{
+  stroke: rgb(186, 186, 186);
+}
+
+.PuzzleLetter--Color4{ 
+  stroke: rgb(126, 255, 152);
+}
+
+.PuzzleLetter--Color5{ 
+  stroke: rgb(219, 99, 255);
+}
+
+.PuzzleLetter--Color6{ 
+  stroke: rgb(225, 182, 255);
+}
+
+.PuzzleLetter--Color7{ 
+  stroke: rgb(225, 79, 186);
+}
+
+.PuzzleLetter--Color8{ 
+  stroke: rgb(117, 174, 117);
+}
+
+.PuzzleLetter--Color9{ 
+  stroke: rgb(157, 151, 237);
+}
+
+
+.PuzzleLetter--Color10 {
+  stroke: rgb(255, 114, 114);
+}
+
+.PuzzleLetter--Color11 {
+  stroke: rgb(255, 200, 0);
+}
+
+.PuzzleLetter--Color12 {
+  stroke: rgb(250, 191, 95);
+}
+
+
+.SolutionsLayout {
+  z-index: -1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+/* lines */
+.SolutionLine {
+  stroke-width: 13;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-opacity: 0.5;
+  fill:none;
+}
+
+.SolutionLine--Large {
+  stroke-width: 11;
+}
+
+.SolutionLine--Color1 {
+  stroke: #51ab42;
+}
+.SolutionLine--Color2 {
+  stroke: #df9055;
+}
+
+.SolutionLine--Color3 {
+  stroke: #7a82ed;
+}
+
+.SolutionLine--Color4 {
+  stroke: #df55c3;
+}
+
+.SolutionLine--Color5 {
+  stroke: #df5555;
+}
+
+.SolutionLine--Color6 {
+  stroke: #55b6df;
+}
+
+/* circles */
+
+.SolutionFirst {
+  stroke-width: 2;
+  r: 9;
+  stroke: rgb(78, 78, 78);
+  fill:white;
+}
+
+/* mobile */
+
 @media only screen and (max-width: 600px) {
   .PuzzleBody .PuzzleTitle {
     font-size: 16px;
@@ -364,7 +497,16 @@ body {
   .HomeForm, .HomeForm--Guide {
     padding:12px;
   }
-  
+
+  .SolutionLine--Mobile{
+    stroke-width: 6;
+  }
+
+  .SolutionFirst--Mobile{
+    stroke-width: 1.5;
+    r: 7;
+  }
+    
 }
 
 @media only screen and (max-width: 370px) {
@@ -373,58 +515,4 @@ body {
     height:14px;
     font-size: 12px;
   }
-}
-
-.PuzzleLetter--Color1{
-  background-color: rgb(99, 224, 255);
-}
-.PuzzleLetter--Color2{
-  background-color: rgb(254, 254, 127);
-}
-
-.PuzzleLetter--Color3{
-  background-color: rgb(186, 186, 186);
-}
-
-.PuzzleLetter--Color4{
-  background-color: rgb(126, 255, 152);
-}
-
-.PuzzleLetter--Color5{
-  background-color: rgb(219, 99, 255);
-  /* color:white; */
-}
-
-.PuzzleLetter--Color6{
-  background-color: rgb(225, 182, 255);
-}
-
-.PuzzleLetter--Color7{
-  background-color: rgb(225, 79, 186);
-  /* color: white; */
-}
-
-.PuzzleLetter--Color8{
-  background-color: rgb(117, 174, 117);
-  /* color: white; */
-}
-
-.PuzzleLetter--Color9{
-  background-color: rgb(157, 151, 237);
-  /* color: white; */
-}
-
-
-.PuzzleLetter--Color10{
-  background-color: rgb(255, 114, 114);
-  /* color: white; */
-}
-
-.PuzzleLetter--Color11{
-  background-color: rgb(255, 200, 0);
-}
-
-.PuzzleLetter--Color12{
-  background-color: rgb(250, 191, 95);
-  /* color: white; */
 }
